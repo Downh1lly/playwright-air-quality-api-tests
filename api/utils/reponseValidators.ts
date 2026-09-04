@@ -47,11 +47,15 @@ const LocationsResponseSchema = z.object({
 
 export type LocationsResponse = z.infer<typeof LocationsResponseSchema>;
 
-const ErrorResponseSchema = z.object({
-  detail: z.array(
-    z.object({ msg: z.string() })
-  ),
-});
+const ErrorResponseSchema = z.union([
+  z.object({
+    detail: z.array(
+      z.object({ msg: z.string() })
+    ),
+  }),
+  z.object({ message: z.string() }),
+  
+]);
 export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 
 function assertSchema<T>(result: ZodSafeParseResult<T>): T {

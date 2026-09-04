@@ -14,39 +14,32 @@ export class OpenAQClient {
     return { 'X-API-Key': apiKey };
   }
 
-  async getLocations(params?: Record<string, string | number | boolean>) {
+  private async requestJson(
+    path: string,
+    logPath: string,
+    params?: Record<string, string | number | boolean>,
+  ) {
     const start = performance.now();
-    const response = await this.request.get('/v3/locations', {
+    const response = await this.request.get(path, {
       headers: this.headers(),
       params,
     });
-
     const body = await response.json();
     const duration = performance.now() - start;
-    console.log(`GET /v3/locations → ${response.status()} (${duration.toFixed(0)} ms)`);
+    console.log(`${logPath} → ${response.status()} (${duration.toFixed(0)} ms)`);
     return { response, body };
+  }
+
+  async getLocations(params?: Record<string, string | number | boolean>) {
+    return this.requestJson('/v3/locations', 'GET /v3/locations', params);
   }
 
   async getLocationsById(id: string) {
-    const start = performance.now();
-    const response = await this.request.get(`/v3/locations/${id}`, {
-      headers: this.headers(),
-    });
-    const body = await response.json();
-    const duration = performance.now() - start;
-    console.log(`/v3/locations/${id} → ${response.status()} (${duration.toFixed(0)} ms)`);
-    return { response, body };
+    return this.requestJson(`/v3/locations/${id}`, `/v3/locations/${id}`);
   }
 
   async getLocationsByCountry(code: string) {
-    const start = performance.now();
-    const response = await this.request.get(`/v3/countries/${code}`, {
-      headers: this.headers(),
-    });
-    const body = await response.json();
-    const duration = performance.now() - start;
-    console.log(`/v3/countries/${code} → ${response.status()} (${duration.toFixed(0)} ms)`);
-    return { response, body };
+    return this.requestJson(`/v3/countries/${code}`, `/v3/countries/${code}`);
   }
 
   async getLocationsValidated(params?: Record<string, string | number | boolean>) {
