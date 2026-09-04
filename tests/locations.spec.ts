@@ -20,7 +20,7 @@ test('GET /locations by ID', async ({ apiClient }) => {
 
 test('should return validation error for negative location id', async ({ apiClient }) => {
   const { response, body }   = await apiClient.getLocationsById('-45');
-  expect(response.status()).toBe(422);
+    expect(response.status()).toBe(422);
 
   const error = validateErrorResponse(body);
   expect(error.detail[0].msg).toContain('greater than or equal to 1');
